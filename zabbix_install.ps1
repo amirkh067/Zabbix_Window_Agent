@@ -54,7 +54,7 @@ try {
 
 # Check if the installation log file was created
 $logFilePath = Join-Path -Path $scriptDirectory -ChildPath "zabbix_agent_install.log"
-if (Test-Path -Path $logFilePath)) {
+if (Test-Path -Path $logFilePath) {
     Write-Host "Installation log file created: $logFilePath"
 } else {
     Write-Host "Installation log file not created."
