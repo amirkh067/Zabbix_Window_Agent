@@ -103,9 +103,11 @@ try {
     exit 1
 }
 
+
 # Restart the Zabbix Agent 2 service
 Write-Host "Restarting Zabbix Agent 2 service..."
 try {
+    Start-Sleep -Seconds 10  # Add a delay to ensure the service is ready for a restart
     Restart-Service -Name "Zabbix Agent 2" -ErrorAction Stop
     Write-Host "Zabbix Agent 2 service restarted successfully."
 } catch {
