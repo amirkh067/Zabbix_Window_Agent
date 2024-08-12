@@ -22,21 +22,25 @@ if (-Not (Test-Path -Path $msiFilePath)) {
     exit 1
 }
 
-# Fetch the proxy name from proxy.txt
+# Fetch the hostname
+$hostname = (Get-WmiObject -Class Win32_ComputerSystem).Name
+Write-Host "Hostname: $hostname"
+
+# Fetch the proxy name specific to this hostname from proxy.txt
 if (-Not (Test-Path -Path $proxyTxtPath)) {
     Write-Host "proxy.txt file not found: $proxyTxtPath"
     exit 1
 }
 
 $proxy = Get-Content -Path $proxyTxtPath | ForEach-Object {
-    if ($_ -imatch "=") {
+    if ($_ -imatch "^$hostname=") {
         $_.Split('=')[1].Trim()
     }
 }
 
-# Check if proxy is correctly fetched
+# Check if the proxy was correctly fetched
 if (-not $proxy) {
-    Write-Host "Proxy value not found in proxy.txt."
+    Write-Host "Proxy value for hostname $hostname not found in proxy.txt."
     exit 1
 }
 
@@ -45,7 +49,7 @@ Write-Host "Proxy name fetched: $proxy"
 # Install the Zabbix agent with SERVER and SERVERACTIVE parameters
 Write-Host "Installing Zabbix agent..."
 try {
-    Start-Process -FilePath msiexec.exe -ArgumentList "/i `"$msiFilePath`" SERVER=$proxy SERVERACTIVE=$proxy /qn /l*v `"$scriptDirectory\zabbix_agent_install.log`"" -Wait -ErrorAction Stop
+    Start-Process -FilePath "msiexec.exe" -ArgumentList "/i `"$msiFilePath`" SERVER=$proxy SERVERACTIVE=$proxy /qn /l*v `"$scriptDirectory\zabbix_agent_install.log`"" -Wait -ErrorAction Stop
     Write-Host "Zabbix agent installation command executed."
 } catch {
     Write-Host "Failed to install Zabbix agent. Error: $_"
@@ -72,10 +76,6 @@ if (-Not (Test-Path -Path $configFilePath)) {
     Write-Host "Configuration file not found: $configFilePath"
     exit 1
 }
-
-# Fetch the hostname
-$hostname = (Get-WmiObject -Class Win32_ComputerSystem).Name
-Write-Host "Hostname: $hostname"
 
 # Read the parameters from the config.txt file
 if (-Not (Test-Path -Path $configTxtPath)) {
