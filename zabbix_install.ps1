@@ -20,13 +20,18 @@ if (-Not (Test-Path -Path $msiFilePath)) {
     exit 1
 }
 
-# Fetch the proxy value from proxy.txt
+# Fetch the proxy name from proxy.txt
 if (-Not (Test-Path -Path $proxyTxtPath)) {
     Write-Host "proxy.txt file not found: $proxyTxtPath"
     exit 1
 }
-$proxy = Get-Content -Path $proxyTxtPath | Select-Object -First 1
-Write-Host "Proxy value: $proxy"
+
+$proxy = Get-Content -Path $proxyTxtPath | ForEach-Object {
+    if ($_ -match "^Hostname=") {
+        $_ -replace "Hostname=", ""
+    }
+}
+Write-Host "Proxy name fetched: $proxy"
 
 # Install the Zabbix agent with SERVER and SERVERACTIVE parameters
 Write-Host "Installing Zabbix agent..."
