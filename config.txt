@@ -3,3 +3,5 @@ Timeout=30
 UserParameter=top.cpu.processes,powershell -Command "Get-Process | Sort-Object CPU -Descending | Select-Object -First 10 -Property ID,ProcessName,@{Name='CPU';Expression={[math]::round($_.CPU, 2)}} | Format-Table -AutoSize"
  
 UserParameter=top.memory.processes,powershell -Command "Get-Process | Sort-Object WorkingSet -Descending | Select-Object -First 10 -Property ID,ProcessName,@{Name='MemoryMB';Expression={[math]::round($_.WorkingSet / 1MB, 2)}} | Format-Table -AutoSize
+
+UserParameter=system.software.list,powershell -ExecutionPolicy Bypass -File "C:\Program Files\Zabbix Agent 2\ListInstalledSoftware.ps1"
