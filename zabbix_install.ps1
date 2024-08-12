@@ -5,7 +5,7 @@ $scriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Definition
 Write-Host "Script directory: $scriptDirectory"
 
 # Define the paths to the MSI, config.txt, and proxy.txt files
-$msiFilePath = Join-Path -Path $scriptDirectory -ChildPath "zabbix_agent2-6.4.13-windows-amd64-openssl.msi"
+$msiFilePath = Join-Path -Path $scriptDirectory -ChildPath "zabbix_agent2-7.0.2-windows-amd64-openssl.msi"
 $configTxtPath = Join-Path -Path $scriptDirectory -ChildPath "config.txt"
 $proxyTxtPath = Join-Path -Path $scriptDirectory -ChildPath "proxy.txt"
 
