@@ -27,10 +27,17 @@ if (-Not (Test-Path -Path $proxyTxtPath)) {
 }
 
 $proxy = Get-Content -Path $proxyTxtPath | ForEach-Object {
-    if ($_ -match "^Hostname=") {
-        $_ -replace "Hostname=", ""
+    if ($_ -match "=") {
+        $_.Split('=')[1].Trim()
     }
 }
+
+# Check if proxy is correctly fetched
+if (-not $proxy) {
+    Write-Host "Proxy value not found in proxy.txt."
+    exit 1
+}
+
 Write-Host "Proxy name fetched: $proxy"
 
 # Install the Zabbix agent with SERVER and SERVERACTIVE parameters
@@ -103,7 +110,6 @@ try {
     exit 1
 }
 
-
 # Restart the Zabbix Agent 2 service
 Write-Host "Restarting Zabbix Agent 2 service..."
 try {
@@ -114,5 +120,6 @@ try {
     Write-Host "Failed to restart Zabbix Agent 2 service. Error: $_"
     exit 1
 }
+
 
 Write-Host "Zabbix Agent 2 installed and configured successfully."
