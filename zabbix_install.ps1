@@ -4,15 +4,17 @@
 $scriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Definition
 Write-Host "Script directory: $scriptDirectory"
 
-# Define the paths to the MSI, config.txt, and proxy.txt files
+# Define the paths to the MSI, config.txt, proxy.txt, and custom script files
 $msiFilePath = Join-Path -Path $scriptDirectory -ChildPath "zabbix_agent2-7.0.2-windows-amd64-openssl.msi"
 $configTxtPath = Join-Path -Path $scriptDirectory -ChildPath "config.txt"
 $proxyTxtPath = Join-Path -Path $scriptDirectory -ChildPath "proxy.txt"
+$customConfigPath = Join-Path -Path $scriptDirectory -ChildPath "ListInstalledSoftware.ps1"
 
 # Output the paths being used
 Write-Host "MSI file path: $msiFilePath"
 Write-Host "Config.txt path: $configTxtPath"
 Write-Host "Proxy.txt path: $proxyTxtPath"
+Write-Host "Custom config path: $customConfigPath"
 
 # Check if the MSI file exists
 if (-Not (Test-Path -Path $msiFilePath)) {
@@ -27,7 +29,7 @@ if (-Not (Test-Path -Path $proxyTxtPath)) {
 }
 
 $proxy = Get-Content -Path $proxyTxtPath | ForEach-Object {
-    if ($_ -match "=") {
+    if ($_ -imatch "=") {
         $_.Split('=')[1].Trim()
     }
 }
@@ -52,15 +54,18 @@ try {
 
 # Check if the installation log file was created
 $logFilePath = Join-Path -Path $scriptDirectory -ChildPath "zabbix_agent_install.log"
-if (Test-Path -Path $logFilePath) {
+if (Test-Path -Path $logFilePath)) {
     Write-Host "Installation log file created: $logFilePath"
 } else {
     Write-Host "Installation log file not created."
 }
 
-# Define the path to the Zabbix agent configuration file
+# Define the path to the Zabbix agent configuration file and installation directory
 $configFilePath = "C:\Program Files\Zabbix Agent 2\zabbix_agent2.conf"
+$zabbixAgentDir = "C:\Program Files\Zabbix Agent 2"
+
 Write-Host "Configuration file path: $configFilePath"
+Write-Host "Zabbix Agent installation directory: $zabbixAgentDir"
 
 # Check if the config file exists
 if (-Not (Test-Path -Path $configFilePath)) {
@@ -110,6 +115,15 @@ try {
     exit 1
 }
 
+# Copy the custom script to the Zabbix Agent 2 installation directory
+try {
+    Copy-Item -Path $customConfigPath -Destination $zabbixAgentDir -Force
+    Write-Host "Custom config file copied to Zabbix Agent 2 directory."
+} catch {
+    Write-Host "Failed to copy custom config file. Error: $_"
+    exit 1
+}
+
 # Restart the Zabbix Agent 2 service
 Write-Host "Restarting Zabbix Agent 2 service..."
 try {
@@ -121,5 +135,4 @@ try {
     exit 1
 }
 
-
-Write-Host "Zabbix Agent 2 installed and configured successfully."
+Write-Host "Zabbix Agent 2 installed, configured, and custom config copied successfully."
