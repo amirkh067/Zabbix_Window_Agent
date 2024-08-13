@@ -1,5 +1,1 @@
-ONUR-01=monsergbzprx.eclit.cloud
-ONUR-12=monsergbzprx.eclit.cloud
-ONUR-11=monsergbzprx.eclit.cloud
-ONURDC-10=monsergbzprx.eclit.cloud
-ONURDC-01=monsergbzprx.eclit.cloud
+
