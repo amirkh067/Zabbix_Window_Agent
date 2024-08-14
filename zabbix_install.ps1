@@ -11,12 +11,12 @@ $proxyTxtPath = Join-Path -Path $scriptDirectory -ChildPath "proxy.txt"
 $customConfigPath = Join-Path -Path $scriptDirectory -ChildPath "ListInstalledSoftware.ps1"
 $PskPath = Join-Path -Path $scriptDirectory -ChildPath "secret.psk"
 
-
 # Output the paths being used
 Write-Host "MSI file path: $msiFilePath"
 Write-Host "Config.txt path: $configTxtPath"
 Write-Host "Proxy.txt path: $proxyTxtPath"
 Write-Host "Custom config path: $customConfigPath"
+Write-Host "PSK path: $PskPath"
 
 # Check if the MSI file exists
 if (-Not (Test-Path -Path $msiFilePath)) {
@@ -91,17 +91,11 @@ Write-Host "Config parameters from config.txt: $configParams"
 Write-Host "Updating configuration file..."
 $configContent = Get-Content -Path $configFilePath
 
-# Update or add Hostname
+# Update or add Hostname and TLSPSKIdentity
 $configContent = $configContent | ForEach-Object {
     if ($_ -match "Hostname=") {
         "Hostname=$hostname"
-    } else {
-        $_
-    }
-}
-
-$configContent = $configContent | ForEach-Object {
-    if ($_ -match "TLSPSKIdentity=") {
+    } elseif ($_ -match "TLSPSKIdentity=") {
         "TLSPSKIdentity=$hostname"
     } else {
         $_
@@ -125,20 +119,14 @@ try {
     exit 1
 }
 
-# Copy the custom script to the Zabbix Agent 2 installation directory
+# Copy the custom script and PSK file to the Zabbix Agent 2 installation directory
 try {
     Copy-Item -Path $customConfigPath -Destination $zabbixAgentDir -Force
     Write-Host "Custom config file copied to Zabbix Agent 2 directory."
-} catch {
-    Write-Host "Failed to copy custom config file. Error: $_"
-    exit 1
-}
-
-try {
     Copy-Item -Path $PskPath -Destination $zabbixAgentDir -Force
-    Write-Host "psk file copied to Zabbix Agent 2 directory."
+    Write-Host "PSK file copied to Zabbix Agent 2 directory."
 } catch {
-    Write-Host "Failed to copy custom config file. Error: $_"
+    Write-Host "Failed to copy files. Error: $_"
     exit 1
 }
 
