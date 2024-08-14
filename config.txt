@@ -1,3 +1,7 @@
+TLSConnect=psk
+TLSAccept=psk
+TLSPSKFile=C:\Program Files\Zabbix Agent 2\secret.psk
+
 Timeout=30  
  
 UserParameter=top.cpu.processes,powershell -Command "Get-Process | Sort-Object CPU -Descending | Select-Object -First 10 -Property ID,ProcessName,@{Name='CPU';Expression={[math]::round($_.CPU, 2)}} | Format-Table -AutoSize"
