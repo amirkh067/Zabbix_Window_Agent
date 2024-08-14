@@ -98,6 +98,14 @@ $configContent = $configContent | ForEach-Object {
     }
 }
 
+$configContent = $configContent | ForEach-Object {
+    if ($_ -match "TLSPSKIdentity=") {
+        "TLSPSKIdentity=$hostname"
+    } else {
+        $_
+    }
+}
+
 # Add Hostname if it does not exist
 if (-not ($configContent -join "`n" | Select-String -Pattern "Hostname=")) {
     $configContent += "Hostname=$hostname"
