@@ -9,6 +9,8 @@ $msiFilePath = Join-Path -Path $scriptDirectory -ChildPath "zabbix_agent2-7.0.2-
 $configTxtPath = Join-Path -Path $scriptDirectory -ChildPath "config.txt"
 $proxyTxtPath = Join-Path -Path $scriptDirectory -ChildPath "proxy.txt"
 $customConfigPath = Join-Path -Path $scriptDirectory -ChildPath "ListInstalledSoftware.ps1"
+$PskPath = Join-Path -Path $scriptDirectory -ChildPath "secret.psk"
+
 
 # Output the paths being used
 Write-Host "MSI file path: $msiFilePath"
@@ -127,6 +129,14 @@ try {
 try {
     Copy-Item -Path $customConfigPath -Destination $zabbixAgentDir -Force
     Write-Host "Custom config file copied to Zabbix Agent 2 directory."
+} catch {
+    Write-Host "Failed to copy custom config file. Error: $_"
+    exit 1
+}
+
+try {
+    Copy-Item -Path $PskPath -Destination $zabbixAgentDir -Force
+    Write-Host "psk file copied to Zabbix Agent 2 directory."
 } catch {
     Write-Host "Failed to copy custom config file. Error: $_"
     exit 1
