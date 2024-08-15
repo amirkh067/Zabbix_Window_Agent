@@ -97,8 +97,9 @@ $configContent = $configContent | ForEach-Object {
         # Replace the Hostname line with the new hostname value
         "Hostname=$hostname"
     } elseif ($_ -match "TLSPSKIdentity=") {
-        $keypsk = Get-Content -Path $PskPath -Raw
-        "TLSPSKIdentity=$hostname$keypsk"
+       # $keypsk = Get-Content -Path $PskPath -Raw
+       # "TLSPSKIdentity=$hostname$keypsk"
+        "TLSPSKIdentity=$hostname"
     } else {
         $_
     }
