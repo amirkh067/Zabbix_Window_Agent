@@ -24,7 +24,6 @@ EVRIM=monseresnprx.eclit.cloud
 EVRIM=monseresnprx.eclit.cloud
 EVRIM=monseresnprx.eclit.cloud
 POZITIFDC-01=monsergbzprx.eclit.cloud
-POZITIFDC-01=monseresnprx.eclit.cloud
 CARLS06=monseresnprx.eclit.cloud
 APP02=monseresnprx.eclit.cloud
 CARLS03=monseresnprx.eclit.cloud
