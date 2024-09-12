@@ -53,8 +53,9 @@ Write-Host "Installing Zabbix agent..."
 try {
    # Start-Process -FilePath "msiexec.exe" -ArgumentList "/i `"$msiFilePath`" SERVER=$proxy SERVERACTIVE=$proxy /qn /l*v `"$scriptDirectory\zabbix_agent_install.log`"" -Wait -ErrorAction Stop
 
+    # Corrected command to install the Zabbix agent
+    Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", "`"$msiFilePath`"", "SERVER=$proxy", "SERVERACTIVE=$proxy", "/qn", "/l*v", "`"$scriptDirectory\zabbix_agent_install.log`"" -Wait -NoNewWindow -ErrorAction Stop
 
-    Start-Process -FilePath "msiexec.exe" -ArgumentList "/i `"$msiFilePath`" SERVER=$proxy SERVERACTIVE=$proxy /qn /l*v `"$scriptDirectory\zabbix_agent_install.log`"" -Wait -NoNewWindow -ErrorAction Stop
     Write-Host "Zabbix agent installation command executed."
 } catch {
     Write-Host "Failed to install Zabbix agent. Error: $_"
